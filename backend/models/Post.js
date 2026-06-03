@@ -12,13 +12,14 @@ const commentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    text: {
+    userAvatar: {
       type: String,
-      required: [true, "Comment text is required"],
+      default: "",
+    },
       trim: true,
       maxlength: [500, "Comment cannot exceed 500 characters"],
     },
-  },
+
   {
     timestamps: true,
   }
@@ -36,7 +37,11 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    // Either text or image must be present (validated in controller)
+    // Avatar URL of the post author — stored at post creation time
+    userAvatar: {
+      type: String,
+      default: "",
+    },
     text: {
       type: String,
       trim: true,

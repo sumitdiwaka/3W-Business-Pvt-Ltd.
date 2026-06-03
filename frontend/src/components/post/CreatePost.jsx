@@ -104,7 +104,7 @@ const CreatePost = ({ onPostCreated }) => {
       </div>
 
       <div className="create-post-body">
-        <Avatar username={user?.username} size={38} />
+        <Avatar username={user?.username} src={user?.avatar} size={38} />
         <div style={{ flex: 1, minWidth: 0 }}>
           <textarea
             ref={textareaRef}

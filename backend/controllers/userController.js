@@ -1,4 +1,5 @@
 const User = require('../models/User')
+const Post = require('../models/Post')
 const { cloudinary } = require('../config/cloudinary')
 
 // @desc    Update profile (username, bio)
@@ -53,6 +54,12 @@ const updateAvatar = async (req, res, next) => {
       },
       { new: true }
     ).select('-password')
+
+    // Update avatar on all posts by this user so feed shows new photo instantly
+    await Post.updateMany(
+      { user: req.user._id },
+      { userAvatar: req.file.path }
+    )
 
     res.status(200).json({ success: true, user: updated })
   } catch (error) {

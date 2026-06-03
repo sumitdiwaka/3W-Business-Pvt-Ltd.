@@ -193,7 +193,7 @@ const PostCard = ({ post, onDelete }) => {
           <div className="comments-section">
             {user && (
               <div className="add-comment-row">
-                <Avatar username={user.username} size={28} />
+                <Avatar username={user.username} src={user.avatar} size={28} />
                 <form className="comment-form" onSubmit={handleComment}>
                   <input
                     className="comment-input"
@@ -213,7 +213,7 @@ const PostCard = ({ post, onDelete }) => {
               <div className="comments-list">
                 {comments.map(c => (
                   <div key={c._id} className="comment-item">
-                    <Avatar username={c.username} size={26} />
+                    <Avatar username={c.username} src={c.userAvatar} size={26} />
                     <div className="comment-bubble">
                       <p className="comment-author">{c.username}</p>
                       <p className="comment-text">{c.text}</p>

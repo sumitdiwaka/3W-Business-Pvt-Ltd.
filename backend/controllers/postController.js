@@ -22,6 +22,7 @@ const createPost = async (req, res, next) => {
     const postData = {
       user: req.user._id,
       username: req.user.username,
+      userAvatar: req.user.avatar || "", // Save current avatar at post creation time
       text: text?.trim() || "",
       image: {},
     };
@@ -199,6 +200,7 @@ const addComment = async (req, res, next) => {
     const comment = {
       user: req.user._id,
       username: req.user.username,
+      userAvatar: req.user.avatar || "", // Save commenter's current avatar
       text: req.body.text.trim(),
     };
 

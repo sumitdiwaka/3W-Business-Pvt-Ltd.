@@ -11,7 +11,7 @@ const RightPanel = ({ postCount = 0 }) => {
       {/* User info card */}
       {user && (
         <div className="widget-card widget-user-info">
-          <Avatar username={user.username} size={64} />
+          <Avatar username={user.username} src={user.avatar} size={64} />
           <p className="user-name">@{user.username}</p>
           <p className="user-email">{user.email}</p>
           <div className="widget-user-stats">
