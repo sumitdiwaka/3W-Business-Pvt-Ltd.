@@ -116,10 +116,10 @@ const PostCard = ({ post, onDelete }) => {
         <div className="post-card-body">
           {/* ── Header ── */}
           <div className="post-header">
-            {/* If post.userAvatar is empty (old post), fall back to current user's avatar for own posts */}
+            {/* post.userAvatar is populated live from User collection by backend */}
             <Avatar
               username={post.username}
-              src={post.userAvatar || (isOwner ? user?.avatar : '')}
+              src={post.userAvatar || ''}
               size={42}
             />
             <div className="post-header-info">
