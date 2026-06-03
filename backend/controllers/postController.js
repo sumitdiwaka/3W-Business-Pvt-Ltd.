@@ -56,15 +56,22 @@ const getAllPosts = async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    // Get total count for pagination metadata
     const totalPosts = await Post.countDocuments();
 
-    // Fetch posts — newest first
+    // Populate user's CURRENT avatar from User collection
+    // This fixes old posts that were created before userAvatar was added
     const posts = await Post.find()
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .lean({ virtuals: true }); // lean() for performance + virtuals for likeCount/commentCount
+      .populate("user", "avatar username") // get latest avatar from User doc
+      .lean({ virtuals: true });
+
+    // Merge: use populated user.avatar as userAvatar (always up to date)
+    const enrichedPosts = posts.map(post => ({
+      ...post,
+      userAvatar: post.user?.avatar || post.userAvatar || "",
+    }));
 
     res.status(200).json({
       success: true,
@@ -75,7 +82,7 @@ const getAllPosts = async (req, res, next) => {
         hasNextPage: page < Math.ceil(totalPosts / limit),
         hasPrevPage: page > 1,
       },
-      posts,
+      posts: enrichedPosts,
     });
   } catch (error) {
     next(error);
@@ -280,7 +287,13 @@ const getPostsByUser = async (req, res, next) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
+      .populate("user", "avatar username")
       .lean({ virtuals: true });
+
+    const enrichedPosts = posts.map(post => ({
+      ...post,
+      userAvatar: post.user?.avatar || post.userAvatar || "",
+    }));
 
     res.status(200).json({
       success: true,
@@ -291,7 +304,7 @@ const getPostsByUser = async (req, res, next) => {
         hasNextPage: page < Math.ceil(totalPosts / limit),
         hasPrevPage: page > 1,
       },
-      posts,
+      posts: enrichedPosts,
     });
   } catch (error) {
     next(error);

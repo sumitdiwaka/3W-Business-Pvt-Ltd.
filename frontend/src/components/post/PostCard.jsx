@@ -116,7 +116,12 @@ const PostCard = ({ post, onDelete }) => {
         <div className="post-card-body">
           {/* ── Header ── */}
           <div className="post-header">
-            <Avatar username={post.username} src={post.userAvatar} size={42} />
+            {/* If post.userAvatar is empty (old post), fall back to current user's avatar for own posts */}
+            <Avatar
+              username={post.username}
+              src={post.userAvatar || (isOwner ? user?.avatar : '')}
+              size={42}
+            />
             <div className="post-header-info">
               <div className="post-author-row">
                 <span className="post-author-name">{post.username}</span>
