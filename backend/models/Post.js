@@ -16,13 +16,14 @@ const commentSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    text: {
+      type: String,
+      required: [true, "Comment text is required"],
       trim: true,
       maxlength: [500, "Comment cannot exceed 500 characters"],
     },
-
-  {
-    timestamps: true,
-  }
+  },
+  { timestamps: true }
 );
 
 // Main Post schema
@@ -37,7 +38,7 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    // Avatar URL of the post author — stored at post creation time
+    // Avatar URL — populated live from User collection on fetch
     userAvatar: {
       type: String,
       default: "",
@@ -49,42 +50,30 @@ const postSchema = new mongoose.Schema(
       default: "",
     },
     image: {
-      url: { type: String, default: "" },       // Cloudinary secure URL
-      publicId: { type: String, default: "" },  // Cloudinary public_id for deletion
+      url:      { type: String, default: "" },
+      publicId: { type: String, default: "" },
     },
     // Array of user ObjectIds who liked this post
-    likes: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    // Array of usernames who liked (for quick display without populate)
-    likedBy: [
-      {
-        type: String,
-      },
-    ],
-    // Embedded comments array
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    // Array of usernames who liked (for quick display)
+    likedBy: [{ type: String }],
+    // Embedded comments
     comments: [commentSchema],
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-// Virtual field for like count
+// Virtual: like count
 postSchema.virtual("likeCount").get(function () {
   return this.likes.length;
 });
 
-// Virtual field for comment count
+// Virtual: comment count
 postSchema.virtual("commentCount").get(function () {
   return this.comments.length;
 });
 
-// Include virtuals when converting to JSON
-postSchema.set("toJSON", { virtuals: true });
+postSchema.set("toJSON",   { virtuals: true });
 postSchema.set("toObject", { virtuals: true });
 
 module.exports = mongoose.model("Post", postSchema);
